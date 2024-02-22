@@ -14,13 +14,13 @@ export default function FormField(
       <Text weight="semibold" size={1}>
         <Flex gap={2} align="center">
           {props.label}
-          <FormFieldValidationStatus
+          {/* <FormFieldValidationStatus
             validation={props.markers?.map((m) => ({
               level: m.level,
               message: m?.item?.message ?? '',
               path: m.path,
             }))}
-          />
+          /> */}
         </Flex>
       </Text>
       {props.description && (
