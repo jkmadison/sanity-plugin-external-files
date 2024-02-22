@@ -1,5 +1,5 @@
 import { UploadIcon } from '@sanity/icons'
-import { Schema } from '@sanity/schema'
+// import { Schema } from '@sanity/schema'
 import { ValidationMarker } from '@sanity/types'
 import {
   Button,
@@ -60,20 +60,20 @@ const ConfigureCredentials: React.FC<{
     }
   }
 
-  const schema = React.useMemo(
-    () =>
-      new Schema({
-        name: 'vendorSchema',
-        types: [
-          {
-            name: 'vendorCredentials',
-            type: 'document',
-            fields: props.vendorConfig.credentialsFields,
-          },
-        ],
-      }),
-    [props.vendorConfig.credentialsFields],
-  )
+  // const schema = React.useMemo(
+  //   () =>
+  //     new Schema({
+  //       name: 'vendorSchema',
+  //       types: [
+  //         {
+  //           name: 'vendorCredentials',
+  //           type: 'document',
+  //           fields: props.vendorConfig.credentialsFields,
+  //         },
+  //       ],
+  //     }),
+  //   [props.vendorConfig.credentialsFields],
+  // )
 
   async function validateForm(values: typeof formValues) {
     // @TODO: how to replace the deprecated @sanity/validation package?

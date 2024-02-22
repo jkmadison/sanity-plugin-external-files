@@ -15,6 +15,7 @@ import FileMetadata from './FileMetadata'
 import VideoIcon from './VideoIcon'
 import WaveformDisplay from './WaveformDisplay'
 import styled from 'styled-components'
+import { useDataset, useProjectId } from 'sanity'
 
 export interface MediaPreview {
   file: MediaFile
@@ -109,7 +110,12 @@ const MediaPreview: React.FC<MediaPreview> = (props) => {
   const [playing, setPlaying] = React.useState(false)
   const [fullFile, setFullFile] = React.useState<SanityUpload>()
   const sanityClient = useSanityClient()
-  const imageBuilder = imageUrlBuilder(sanityClient)
+  const dataset = useDataset()
+  const projectId = useProjectId()
+  const imageBuilder = imageUrlBuilder({
+    dataset,
+    projectId,
+  })
 
   const expandReference = React.useCallback(async (_ref: string) => {
     const doc = await sanityClient.fetch<SanityUpload>(`*[_id == $id][0]`, {
