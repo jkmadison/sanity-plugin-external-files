@@ -1,5 +1,5 @@
 import type { SanityDocument } from '@sanity/client'
-import { Box, Card, Text } from '@sanity/ui'
+import { Box, Card, Text, useTheme } from '@sanity/ui'
 import React from 'react'
 import { collate, useSchema } from 'sanity'
 import styled from 'styled-components'
@@ -8,8 +8,9 @@ import { DocumentPreview } from '../documentPreview/DocumentPreview'
 
 const Container = styled(Box)`
   * {
-    color: ${(props: any) => props.theme.sanity.color.base.fg};
-  }
+    color: ${(props: any) => {
+      return props.theme.sanity.color.base.fg
+    }}
   a {
     text-decoration: none;
   }
@@ -25,6 +26,7 @@ const FileReferences: React.FC<{
   placement: 'input' | 'tool'
 }> = (props) => {
   const schema = useSchema()
+  const theme = useTheme()
   if (!props.isLoaded) {
     return <SpinnerBox />
   }
@@ -44,7 +46,7 @@ const FileReferences: React.FC<{
 
   const documentPairs = collate(props.references || [])
   return (
-    <Container>
+    <Container theme={theme}>
       {documentPairs?.map((documentPair) => {
         const schemaType = schema.get(documentPair.type)
 
