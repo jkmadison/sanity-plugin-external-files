@@ -1,4 +1,4 @@
-import { VendorConfiguration } from 'sanity-plugin-external-files'
+import { VendorConfiguration } from '@jkmadison/sanity-plugin-external-files'
 import { S3Credentials } from '.'
 
 const uploadFile: VendorConfiguration<S3Credentials>['uploadFile'] = ({

@@ -6,7 +6,7 @@ import {
   EarthGlobeIcon,
   FolderIcon,
 } from '@sanity/icons'
-import { VendorConfiguration } from 'sanity-plugin-external-files'
+import { VendorConfiguration } from '@jkmadison/sanity-plugin-external-files'
 
 export const schemaConfig = {
   title: 'Media file hosted in AWS S3',
