@@ -1,6 +1,6 @@
 {
   "name": "@jkmadison/sanity-plugin-s3-files",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Store Sanity media files in AWS S3",
   "scripts": {
     "clear-lib": "node clearLib.js",
@@ -33,7 +33,7 @@
     "styled-components": "^6.1.1"
   },
   "peerDependencies": {
-    "sanity": "^3.14.0",
+    "sanity": "^4.15",
     "styled-components": "^5 || ^6"
   },
   "bugs": {
