@@ -1,21 +1,21 @@
-import { blue } from '@sanity/color'
+import { blue } from '@sanity/color';
 import {
   DocumentIcon,
   DocumentPdfIcon,
   ImageIcon,
   PlayIcon,
-} from '@sanity/icons'
-import imageUrlBuilder from '@sanity/image-url'
-import { Box, Card, Spinner, Stack } from '@sanity/ui'
-import React, { ReactNode } from 'react'
-import { useSanityClient } from '../scripts/sanityClient'
-import { MediaFile, SanityUpload } from '../types'
-import AudioIcon from './AudioIcon'
-import FileMetadata from './FileMetadata'
-import VideoIcon from './VideoIcon'
-import WaveformDisplay from './WaveformDisplay'
-import styled from 'styled-components'
-import { useDataset, useProjectId } from 'sanity'
+} from '@sanity/icons';
+import imageUrlBuilder from '@sanity/image-url';
+import { Box, Card, Spinner } from '@sanity/ui';
+import React, { ReactNode } from 'react';
+import { useSanityClient } from '../scripts/sanityClient';
+import { MediaFile, SanityUpload } from '../types';
+import AudioIcon from './AudioIcon';
+import FileMetadata from './FileMetadata';
+import VideoIcon from './VideoIcon';
+import WaveformDisplay from './WaveformDisplay';
+import styled from 'styled-components';
+import { useDataset, useProjectId } from 'sanity';
 
 export interface MediaPreview {
   file: MediaFile
@@ -112,10 +112,36 @@ const MediaPreview: React.FC<MediaPreview> = (props) => {
   const sanityClient = useSanityClient()
   const dataset = useDataset()
   const projectId = useProjectId()
-  const imageBuilder = imageUrlBuilder({
-    dataset,
-    projectId,
-  })
+  
+  // Get projectId and dataset with fallbacks
+  // Try hooks first, then extract from client config
+  const imageBuilder = React.useMemo(() => {
+    let finalDataset = dataset
+    let finalProjectId = projectId
+    
+    // If hooks returned undefined, try to get from client config
+    if (!finalDataset || !finalProjectId) {
+      const client = sanityClient as any
+      // Try various ways to access client config
+      const clientConfig = 
+        client?.config || 
+        client?.clientConfig || 
+        client?.request?.config ||
+        (client?.request?.uri ? {
+          // Extract from URL if available
+          projectId: client.request.uri.match(/\/project\/([^\/]+)/)?.[1],
+          dataset: client.request.uri.match(/\/dataset\/([^\/]+)/)?.[1],
+        } : null)
+      
+      finalDataset = finalDataset || clientConfig?.dataset || ''
+      finalProjectId = finalProjectId || clientConfig?.projectId || ''
+    }
+    
+    return imageUrlBuilder({
+      dataset: finalDataset || '',
+      projectId: finalProjectId || '',
+    })
+  }, [sanityClient, dataset, projectId])
 
   const expandReference = React.useCallback(async (_ref: string) => {
     const doc = await sanityClient.fetch<SanityUpload>(`*[_id == $id][0]`, {
