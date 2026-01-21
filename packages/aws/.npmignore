@@ -6,3 +6,4 @@ clearLib.js
 .prettierrc
 tsconfig.json
 node_modules
+!build/

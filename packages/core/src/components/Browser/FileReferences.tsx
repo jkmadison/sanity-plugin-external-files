@@ -6,7 +6,7 @@ import styled from 'styled-components'
 import SpinnerBox from '../SpinnerBox'
 import { DocumentPreview } from '../documentPreview/DocumentPreview'
 
-const Container = styled(Box)`
+const Container = styled(Box as any)`
   * {
     color: ${(props: any) => {
       return props.theme.sanity.color.base.fg

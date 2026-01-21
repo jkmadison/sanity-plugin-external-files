@@ -28,7 +28,7 @@ export default function FormField(
           {props.description}
         </Text>
       )}
-      {props.children}
+      <>{props.children}</>
     </Stack>
   )
 }

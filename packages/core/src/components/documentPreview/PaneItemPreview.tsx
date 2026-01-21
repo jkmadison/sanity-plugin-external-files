@@ -2,9 +2,9 @@
 // https://github.com/sanity-io/sanity/blob/next/packages/sanity/src/desk/components/paneItem/PaneItemPreview.tsx
 import { PreviewValue } from '@sanity/types'
 import { Inline } from '@sanity/ui'
+import React, { isValidElement, useMemo } from 'react'
+import { useObservable } from 'react-rx'
 import { isNumber, isString } from 'lodash'
-import React, { isValidElement } from 'react'
-import { useMemoObservable } from 'react-rx'
 import type { SanityDocument, SchemaType } from 'sanity'
 import {
   DocumentPresence,
@@ -18,6 +18,7 @@ import {
 } from 'sanity'
 import { DraftStatus } from './DraftStatus'
 import { PublishedStatus } from './PublishedStatus'
+import { Observable } from 'rxjs'
 
 export interface PaneItemPreviewState {
   isLoading?: boolean
@@ -36,26 +37,21 @@ export interface PaneItemPreviewProps {
 
 export function PaneItemPreview(props: PaneItemPreviewProps) {
   const { icon, layout, presence, schemaType, value } = props
-  const title =
-    (isRecord(value.title) && isValidElement(value.title)) ||
-    isString(value.title) ||
-    isNumber(value.title)
-      ? value.title
-      : null
 
   // NOTE: this emits sync so can never be null
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  const { draft, published, isLoading } =
-    useMemoObservable<PaneItemPreviewState>(
-      () =>
-        getPreviewStateObservable(
-          props.documentPreviewStore,
-          schemaType,
-          value._id,
-          title,
-        ),
-      [props.documentPreviewStore, schemaType, value._id, title],
-    )!
+  const previewObservable = useMemo<Observable<PaneItemPreviewState>>(
+    () =>
+      getPreviewStateObservable(
+        props.documentPreviewStore,
+        schemaType,
+        value._id,
+      ),
+    [props.documentPreviewStore, schemaType, value._id],
+  )!
+  const { draft, published, isLoading } = useObservable(
+    previewObservable,
+  )! as Required<PaneItemPreviewState>
 
   const status = isLoading ? null : (
     <Inline space={4}>
@@ -69,7 +65,11 @@ export function PaneItemPreview(props: PaneItemPreviewProps) {
 
   return (
     <SanityDefaultPreview
-      {...(getPreviewValueWithFallback({ value, draft, published }) as any)}
+      {...(getPreviewValueWithFallback({
+        snapshot: value,
+        original: draft ?? undefined,
+        fallback: published ?? undefined,
+      }) as any)}
       isPlaceholder={isLoading}
       icon={icon}
       layout={layout}
